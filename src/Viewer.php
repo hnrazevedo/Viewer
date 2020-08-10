@@ -24,15 +24,9 @@ class Viewer{
         return self::getInstance($path);
     }
 
-    public function render(string $file, string $return = null)
+    public function render(string $file, bool $return = false): string
     {
         header('Content-Type: text/html; charset=utf-8');
-
-        if(!empty($_SESSION['save'])){
-            foreach ($_SESSION['save'] as $key => $value) {
-                $_SESSION['data'][$key] = $value;
-            }
-        }
         
         $this->check_viewExist($file);
 
@@ -44,19 +38,14 @@ class Viewer{
         
         $buffer = $this->removeComments($buffer);
 
-        if(is_null($return)){
+        $this->saveData();
+
+        if(!$return){
             echo $buffer;
-        }else{
-            return $buffer;
+            return '';
         }
-
-        unset($_SESSION['data']);
-
-        if(!empty($_SESSION['save'])){
-            foreach ($_SESSION['save'] as $key => $value) {
-                $_SESSION['data'][$key] = $value;
-            }
-        }
+        
+        return $buffer;
     }
 
 }

@@ -3,6 +3,7 @@
 namespace HnrAzevedo\Viewer;
 
 trait HelperTrait{
+    use CheckTrait;
 
     protected function getOB(string $require): string
     {
@@ -19,18 +20,18 @@ trait HelperTrait{
         return implode('',$response);
     }
 
-    protected function getVars(string $buffer,string $prefix = null, $valuee = null): string
+    protected function getVars(string $buffer,string $prefix = null, ?array $values = null): string
     {
-        //Recebe os valores a serem substituidos pela session caso não seja passado via parametro
+        $_SESSION['data'] = (empty($_SESSION['data'])) ? null : $_SESSION['data'];
 
-        //$vars = (!empty($valuee)) ? $valuee : unserialize($_SESSION['data']);
-        $vars = (!empty($valuee)) ? $valuee : (empty($_SESSION['data']) ? null : $_SESSION['data']);
+        $vars = (is_null($values)) ? $_SESSION['data'] : $values;
 
-        if(empty($vars)){
-            return $buffer;
-        }
+        return (is_null($vars)) ? $buffer : $this->replace_vars($buffer, $vars, $prefix);
+    }
+
+    protected function replace_vars($buffer, $vars, $prefix): string
+    {
         foreach ($vars as $key => $value) {
-            //Trabalha separadamente por tipo
             switch(gettype($value)){
                 case 'string':
                 case 'int':
@@ -38,47 +39,54 @@ trait HelperTrait{
                 case 'float':
                 case 'boolean':
                 case 'NULL':
-
-                    //Verifica se variável da session é solicitada no buffer
-                    while(strstr($buffer,'{{ '.$prefix.$key.' }}')){
-                        $buffer = str_replace('{{ '.$prefix.$key.' }}', $value ,$buffer);
-                    }
+                    $buffer = $this->replace_value($buffer, $value, $prefix, $key);
                     break;
                 case 'array':
-                    //Faz um loop nos campos do array
-                    foreach($value as $index => $val){
-                        //Verifica se conteudo do indice no loop é do tipo objeto ou outro array, se for, chama a mesma função para trabalhar nele
-                        if(gettype($val)==='array' or gettype($val)==='object'){
-
-                            $buffer = $this->getVars($buffer,$key.'.'.$index.'.',$val);
-                        }
-
-                        //Caso não seja objeto ou array é trabalhado o conteudo a ser substituido
-                        while(strstr($buffer,'{{ '.$prefix.$key.'.'.$index.' }}')){
-                            $buffer = str_replace('{{ '.$prefix.$key.'.'.$index.' }}',$val,$buffer);
-                        }
-                    }
+                    $buffer = $this->replace_Array($buffer, $value, $prefix, $key);
                     break;
                 case 'object':
-                    //Faz um loop nos campos do objeto
-                    foreach($value->getFields() as $field => $val){
-                        //Verifica se o campo em loop é do tipo array ou um outro objetivo, se for, chama a mesma função para trabalhar enele
-                        if(gettype($val)==='array' or gettype($val)==='object'){
-                            $buffer = $this->getVars($buffer,$key.'.'.$field.'.',$val);
-                        }
-
-                        //Caso não seja objeto ou array é trabalhado o conteudo do campo
-                        while(strstr($buffer,'{{ '.$prefix.$key.'.'.$field.' }}')){
-                            echo 1;
-                            $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val[$field] ,$buffer);
-                        }
-                    }
+                    $buffer = $this->replace_Object($buffer, $value, $prefix, $key);
                     break;
                 default:
                     break;
             }
         }
 
+        return $buffer;
+    }
+
+    protected function replace_value(string $buffer, $value, string $prefix, string $key): string
+    {
+        if(gettype($value)!=='array' && gettype($value)!=='object'){
+            while(strstr($buffer,'{{ '.$prefix.$key.' }}')){
+                $buffer = str_replace('{{ '.$prefix.$key.' }}', $value ,$buffer);
+            }
+        }
+        return $buffer;
+    }
+
+    protected function replace_Object(string $buffer, object $obj, string $prefix, string $key): string
+    {
+        foreach($obj->getFields() as $field => $val){
+            
+            $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
+
+            while(strstr($buffer,'{{ '.$prefix.$key.'.'.$field.' }}')){
+                $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val[$field] ,$buffer);
+            }
+        }
+        return $buffer;
+    }
+
+    protected function replace_Array(string $buffer, array $array, string $prefix, string $key): string
+    {
+        foreach($array as $field => $val){
+            $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
+
+            while(strstr($buffer,'{{ '.$prefix.$key.'.'.$field.' }}')){
+                $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val,$buffer);
+            }
+        }
         return $buffer;
     }
 
@@ -105,20 +113,8 @@ trait HelperTrait{
                 strpos($buffer,'@import(\''),
                 strpos(strstr($buffer,'@import'),'\')')+2
             );
-            $tpl = str_replace('.',DIRECTORY_SEPARATOR,
-                substr(
-                    $import,
-                    strpos($import,'\'')+1,
-                    strlen($import)-11
-                )
-            );
 
-            if(!file_exists($this->path . DIRECTORY_SEPARATOR . $tpl . '.tpl.php')){
-              $_SESSION['data'] = unserialize($_SESSION['data']);
-              $_SESSION['data']['title'] = 'Arquivo tpl não localizado:';
-              $_SESSION['data']['message'] = 'Import \''.str_replace(['@import(\'','\')'],'',$import).'\' não encontrado.';
-              throw new \Exception('Import \''.str_replace(['@import(\'','\')'],'',$import).'\' não encontrado.');
-            }
+            $tpl = $this->check_importExist($import);
 
             try{
                 $buffer_tpl = $this->getOB($this->path . DIRECTORY_SEPARATOR . $tpl . '.tpl.php');
@@ -132,6 +128,21 @@ trait HelperTrait{
         }
 
         return $buffer;
+    }
+
+    protected function saveData(): bool
+    {   
+        if(session_status() !== PHP_SESSION_ACTIVE){
+            return false;
+        }
+        unset($_SESSION['data']);
+
+        if(!empty($_SESSION['save'])){
+            foreach ($_SESSION['save'] as $key => $value) {
+                $_SESSION['data'][$key] = $value;
+            }
+        }
+        return true;
     }
 
 }

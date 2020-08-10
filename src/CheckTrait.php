@@ -13,4 +13,20 @@ trait CheckTrait{
         }
     }
 
+    protected function check_importExist($import): string
+    {
+        $tpl = str_replace('.',DIRECTORY_SEPARATOR,
+                substr(
+                    $import,
+                    strpos($import,'\'')+1,
+                    strlen($import)-11
+                )
+            );
+
+        if(!file_exists($this->path . DIRECTORY_SEPARATOR . $tpl . '.tpl.php')){
+            throw new Exception('Import \''.str_replace(['@import(\'','\')'],'',$import).'\' não encontrado.');
+        }
+        return $tpl;
+    }
+
 }
