@@ -2,6 +2,8 @@
 
 namespace HnrAzevedo\Viewer;
 
+use Exception;
+
 trait HelperTrait{
     use CheckTrait;
 
@@ -100,7 +102,7 @@ trait HelperTrait{
         return $buffer;
     }
 
-    protected function getImport(string $buffer): string
+    protected function getImport(string $buffer, array $data = []): string
     {
         while(strstr($buffer,'@import')){
             $buffer = $this->getVars($buffer);
@@ -114,10 +116,9 @@ trait HelperTrait{
             $tpl = $this->check_importExist($import);
 
             try{
-                $buffer_tpl = $this->getOB($this->path . DIRECTORY_SEPARATOR . $tpl . '.tpl.php');
-            }catch(\Exception $er){
-                var_dump($er);
-                die();
+                $buffer_tpl = $this->getOB($this->path . DIRECTORY_SEPARATOR . $tpl . '.tpl.php', $data);
+            }catch(Exception $er){
+                throw $er;
             }
             
             $buffer_tpl = $this->getVars($buffer_tpl);

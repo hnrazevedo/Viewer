@@ -34,7 +34,7 @@ class Viewer{
         
         $buffer = $this->getVars($buffer);
         
-        $buffer = $this->getImport($buffer);
+        $buffer = $this->getImport($buffer, $data);
         
         $buffer = $this->removeComments($buffer);
 
