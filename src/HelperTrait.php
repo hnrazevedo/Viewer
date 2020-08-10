@@ -13,6 +13,8 @@ trait HelperTrait{
             $$variable = $value;
         }
 
+        $_SESSION['data'] = (!empty($data)) ? $data : $_SESSION['data'];
+
         ob_start();
         require($require);
         $response = ob_get_contents();
@@ -57,8 +59,8 @@ trait HelperTrait{
     protected function replace_value(string $buffer, $value, string $prefix, string $key): string
     {
         if(gettype($value)!=='array' && gettype($value)!=='object'){
-            while(strstr($buffer,'{{ '.$prefix.$key.' }}')){
-                $buffer = str_replace('{{ '.$prefix.$key.' }}', $value ,$buffer);
+            while(strstr($buffer,'{{'.$prefix.$key.'}}')){
+                $buffer = str_replace('{{'.$prefix.$key.'}}', $value ,$buffer);
             }
         }
         return $buffer;
@@ -70,20 +72,20 @@ trait HelperTrait{
             
             $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
 
-            while(strstr($buffer,'{{ '.$prefix.$key.'.'.$field.' }}')){
-                $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val ,$buffer);
+            while(strstr($buffer,'{{'.$prefix.$key.'.'.$field.'}}')){
+                $buffer = str_replace('{{'.$prefix.$key.'.'.$field.'}}',$val ,$buffer);
             }
         }
         return $buffer;
     }
 
-    protected function replace_Array(string $buffer, array $array, string $prefix, string $key): string
+    protected function replace_Array(string $buffer, array $array, ?string $prefix = '', ?string $key = ''): string
     {
         foreach($array as $field => $val){
             $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
 
-            while(strstr($buffer,'{{ '.$prefix.$key.'.'.$field.' }}')){
-                $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val,$buffer);
+            while(strstr($buffer,'{{'.$prefix.$key.'.'.$field.'}}')){
+                $buffer = str_replace('{{'.$prefix.$key.'.'.$field.'}}',$val,$buffer);
             }
         }
         return $buffer;
@@ -99,32 +101,6 @@ trait HelperTrait{
             );
             $buffer = str_replace($comment,'',$buffer);
         }
-        return $buffer;
-    }
-
-    protected function getImport(string $buffer, array $data = []): string
-    {
-        while(strstr($buffer,'@import')){
-            $buffer = $this->getVars($buffer);
-
-            $import = substr(
-                $buffer,
-                strpos($buffer,'@import(\''),
-                strpos(strstr($buffer,'@import'),'\')')+2
-            );
-
-            $tpl = $this->check_importExist($import);
-
-            try{
-                $buffer_tpl = $this->getOB($this->path . DIRECTORY_SEPARATOR . $tpl . '.tpl.php', $data);
-            }catch(Exception $er){
-                throw $er;
-            }
-            
-            $buffer_tpl = $this->getVars($buffer_tpl);
-            $buffer = str_replace($import,$buffer_tpl,$buffer);
-        }
-
         return $buffer;
     }
 

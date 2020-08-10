@@ -8,19 +8,22 @@ class Viewer{
     private static $instance = null;
     private string $path = '';
 
-    public function __construct(string $path){
+    public function __construct(string $path)
+    {
         $this->path = $path;
         return $this;
     }
 
-    public static function getInstance(string $path){
+    public static function getInstance(string $path): Viewer
+    {
         if(is_null(self::$instance)){
             self::$instance = new self($path);
         }
         return self::$instance;
     }
 
-    public static function create(string $path){
+    public static function create(string $path): Viewer
+    {
         return self::getInstance($path);
     }
 
@@ -34,8 +37,6 @@ class Viewer{
         
         $buffer = $this->getVars($buffer);
         
-        $buffer = $this->getImport($buffer, $data);
-        
         $buffer = $this->removeComments($buffer);
 
         $this->saveData();
@@ -46,6 +47,13 @@ class Viewer{
         }
         
         return $buffer;
+    }
+
+    public function include(string $file): void
+    {
+        $buffer = $this->getOB($this->path.$file.'.tpl.php');
+        $buffer = $this->getVars($buffer);
+        echo $buffer;
     }
 
 }

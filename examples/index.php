@@ -11,8 +11,10 @@ use HnrAzevedo\Viewer\Viewer;
 try{
     
     $data = ['parameter'=>
-        ['param1' => 1],
-        ['param2' => 2]    
+        [
+            'param1' => 'param1Value',
+            'param2' => 'param2Value'  
+        ]    
     ];
 
     Viewer::create(__DIR__.'/Views/')
