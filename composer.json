@@ -1,5 +1,5 @@
 {
-    "name": "hnrazevedo/router",
+    "name": "hnrazevedo/viewer",
     "description": "Tools for developing personal projects",
     "authors": [
         {
@@ -15,8 +15,7 @@
     "license":"MIT",
     "autoload": {
         "psr-4": {
-            "HnrAzevedo\\Router\\":"src/",
-            "Example\\Controllers\\":"examples/Controllers/"
+            "HnrAzevedo\\Viewer\\":"src/"
         }
     }
 }
