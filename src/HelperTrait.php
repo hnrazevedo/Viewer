@@ -33,14 +33,6 @@ trait HelperTrait{
     {
         foreach ($vars as $key => $value) {
             switch(gettype($value)){
-                case 'string':
-                case 'int':
-                case 'integer':
-                case 'float':
-                case 'boolean':
-                case 'NULL':
-                    $buffer = $this->replace_value($buffer, $value, $prefix, $key);
-                    break;
                 case 'array':
                     $buffer = $this->replace_Array($buffer, $value, $prefix, $key);
                     break;
@@ -48,6 +40,7 @@ trait HelperTrait{
                     $buffer = $this->replace_Object($buffer, $value, $prefix, $key);
                     break;
                 default:
+                    $buffer = $this->replace_value($buffer, $value, $prefix, $key);
                     break;
             }
         }
