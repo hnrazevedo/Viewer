@@ -24,13 +24,13 @@ class Viewer{
         return self::getInstance($path);
     }
 
-    public function render(string $file, bool $return = false): string
+    public function render(string $file, array $data = [], bool $return = false): string
     {
         header('Content-Type: text/html; charset=utf-8');
         
         $this->check_viewExist($file);
 
-        $buffer = $this->getOB($this->path . DIRECTORY_SEPARATOR . $file . '.view.php');
+        $buffer = $this->getOB($this->path . DIRECTORY_SEPARATOR . $file . '.view.php', $data);
         
         $buffer = $this->getVars($buffer);
         

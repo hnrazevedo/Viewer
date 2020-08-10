@@ -3,15 +3,20 @@
 session_start();
 
 require __DIR__.'/../vendor/autoload.php';
-require __DIR__.'/config.php';
 
-use HnrAzevedo\Router\Router;
+use HnrAzevedo\Viewer\Viewer;
 
 /* NOTE: in case of error an exception is thrown */
 
 try{
     
-    Router::create()->dispatch();
+    $data = ['parameter'=>
+        ['param1' => 1],
+        ['param2' => 2]    
+    ];
+
+    Viewer::create(__DIR__.'/Views/')
+          ->render('default', $data);
 
 }catch(Exception $er){
 

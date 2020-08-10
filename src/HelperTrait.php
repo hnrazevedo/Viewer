@@ -5,8 +5,12 @@ namespace HnrAzevedo\Viewer;
 trait HelperTrait{
     use CheckTrait;
 
-    protected function getOB(string $require): string
+    protected function getOB(string $require, array $data = []): string
     {
+        foreach($data as $variable => $value){
+            $$variable = $value;
+        }
+
         ob_start();
         require($require);
         $response = ob_get_contents();
@@ -60,12 +64,12 @@ trait HelperTrait{
 
     protected function replace_Object(string $buffer, object $obj, string $prefix, string $key): string
     {
-        foreach($obj->getFields() as $field => $val){
+        foreach($obj->get_object_vars() as $field => $val){
             
             $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
 
             while(strstr($buffer,'{{ '.$prefix.$key.'.'.$field.' }}')){
-                $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val[$field] ,$buffer);
+                $buffer = str_replace('{{ '.$prefix.$key.'.'.$field.' }}',$val ,$buffer);
             }
         }
         return $buffer;
