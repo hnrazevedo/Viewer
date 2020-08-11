@@ -53,8 +53,13 @@ class Viewer{
 
     public function include(string $file): void
     {
-        $buffer = $this->getOB($this->path.$file.'.tpl.php');
-        $buffer = $this->getVars($buffer);
+        $buffer = '';
+        try{
+            $buffer = $this->getOB($this->path.$file.'.tpl.php');
+            $buffer = $this->getVars($buffer);
+        }catch(\Exception $er){
+            $buffer = "Component error: {$er->getMessage()}";
+        }
         echo $buffer;
     }
 
