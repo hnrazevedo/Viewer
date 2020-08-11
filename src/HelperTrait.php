@@ -56,7 +56,7 @@ trait HelperTrait{
         return $buffer;
     }
 
-    protected function replace_value(string $buffer, $value, string $prefix, string $key): string
+    protected function replace_value(string $buffer, $value, ?string $prefix, string $key): string
     {
         if(gettype($value)!=='array' && gettype($value)!=='object'){
             while(strstr($buffer,'{{'.$prefix.$key.'}}')){
