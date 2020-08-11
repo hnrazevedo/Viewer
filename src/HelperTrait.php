@@ -16,6 +16,8 @@ trait HelperTrait{
         if(!file_exists($require)){
             throw new Exception("Impotation file does not exist:{$require} .");
         }
+        
+        $this->initData();
 
         $_SESSION['data'] = (!empty($data)) ? array_merge($data,$_SESSION['data']) : $_SESSION['data'];
 
@@ -32,9 +34,14 @@ trait HelperTrait{
         return implode('',$response);
     }
 
-    protected function getVars(string $buffer,string $prefix = null, ?array $values = null): string
+    protected function initData()
     {
         $_SESSION['data'] = (empty($_SESSION['data'])) ? null : $_SESSION['data'];
+    }
+
+    protected function getVars(string $buffer,string $prefix = null, ?array $values = null): string
+    {
+        $this->initData();
 
         $vars = (is_null($values)) ? $_SESSION['data'] : $values;
 
