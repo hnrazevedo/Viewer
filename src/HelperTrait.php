@@ -17,7 +17,7 @@ trait HelperTrait{
             throw new Exception("Impotation file does not exist:{$require} .");
         }
 
-        $_SESSION['data'] = (!empty($data)) ? $data : $_SESSION['data'];
+        $_SESSION['data'] = (!empty($data)) ? array_merge($data,$_SESSION['data']) : $_SESSION['data'];
 
         ob_start();
         require($require);
