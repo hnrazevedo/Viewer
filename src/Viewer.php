@@ -58,7 +58,7 @@ class Viewer{
             $buffer = $this->getOB($this->path.$file.'.tpl.php');
             $buffer = $this->getVars($buffer);
         }catch(\Exception $er){
-            $buffer = "Component error: {$er->getMessage()}";
+            $buffer = "<div class='view error'>Component error: {$er->getMessage()}</div>";
         }
         echo $buffer;
     }
