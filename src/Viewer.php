@@ -29,7 +29,9 @@ class Viewer{
 
     public function render(string $file, array $data = [], bool $return = false): string
     {
-        header('Content-Type: text/html; charset=utf-8');
+        if(!headers_sent()){
+            header('Content-Type: text/html; charset=utf-8');
+        }
         
         $this->check_viewExist($file);
 
