@@ -13,6 +13,10 @@ trait HelperTrait{
             $$variable = $value;
         }
 
+        if(!file_exists($require)){
+            throw new Exception("Impotation file does not exist:{$require} .");
+        }
+
         $_SESSION['data'] = (!empty($data)) ? $data : $_SESSION['data'];
 
         ob_start();
