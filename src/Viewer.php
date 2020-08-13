@@ -8,17 +8,17 @@ class Viewer{
     private static $instance = null;
     private string $path = '';
 
-    public function __construct(string $path)
+    public function __construct()
     {
-        $this->path = $path;
         return $this;
     }
 
     public static function getInstance(string $path): Viewer
     {
         if(is_null(self::$instance)){
-            self::$instance = new self($path);
+            self::$instance = new self();
         }
+        self::$instance->path = $path;
         return self::$instance;
     }
 
