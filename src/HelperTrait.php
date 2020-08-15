@@ -15,7 +15,7 @@ trait HelperTrait{
 
         if(!file_exists($require)){
             $require = basename($require);
-            throw new Exception("Impotation file does not exist: {$require} .");
+            throw new Exception("Importation file does not exist: {$require} .");
         }
         
         $this->initData();
