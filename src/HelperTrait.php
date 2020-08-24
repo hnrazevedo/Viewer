@@ -9,9 +9,11 @@ trait HelperTrait{
 
     protected function getOB(string $require, array $data = []): string
     {
-        foreach($data as $variable => $value){
-            $$variable = $value;
+        foreach($data as $variable => $_){
+            $$variable = $_;
         }
+        
+        $_ = (array_key_exists('_',$data)) ? $data['_'] : null;
 
         if(!file_exists($require)){
             $require = basename($require);
