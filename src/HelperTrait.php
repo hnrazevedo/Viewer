@@ -15,7 +15,7 @@ trait HelperTrait{
 
         if(!file_exists($require)){
             $require = basename($require);
-            throw new Exception("Impotation file does not exist: {$require} .");
+            throw new Exception("Importation file does not exist: {$require} .");
         }
         
         $this->initData();
@@ -71,8 +71,8 @@ trait HelperTrait{
     protected function replace_value(string $buffer, $value, ?string $prefix, string $key): string
     {
         if(gettype($value)!=='array' && gettype($value)!=='object'){
-            while(strstr($buffer,'{{'.$prefix.$key.'}}')){
-                $buffer = str_replace('{{'.$prefix.$key.'}}', $value ,$buffer);
+            while(strstr($buffer,'{{ $'.$prefix.$key.' }}')){
+                $buffer = str_replace('{{ $'.$prefix.$key.' }}', htmlspecialchars($value) ,$buffer);
             }
         }
         return $buffer;
@@ -84,8 +84,8 @@ trait HelperTrait{
             
             $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
 
-            while(strstr($buffer,'{{'.$prefix.$key.'.'.$field.'}}')){
-                $buffer = str_replace('{{'.$prefix.$key.'.'.$field.'}}',$val ,$buffer);
+            while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
+                $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($val) ,$buffer);
             }
         }
         return $buffer;
@@ -96,8 +96,8 @@ trait HelperTrait{
         foreach($array as $field => $val){
             $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
 
-            while(strstr($buffer,'{{'.$prefix.$key.'.'.$field.'}}')){
-                $buffer = str_replace('{{'.$prefix.$key.'.'.$field.'}}',$val,$buffer);
+            while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
+                $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($val) ,$buffer);
             }
         }
         return $buffer;

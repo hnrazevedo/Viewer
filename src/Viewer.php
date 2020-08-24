@@ -3,7 +3,7 @@
 namespace HnrAzevedo\Viewer;
 
 class Viewer{
-    use HelperTrait, CheckTrait;
+    use EspecialHelperTrait, CheckTrait;
 
     private static $instance = null;
     private string $path = '';
@@ -38,6 +38,7 @@ class Viewer{
         $buffer = $this->getOB($this->path . DIRECTORY_SEPARATOR . $file . '.view.php', $data);
         
         $buffer = $this->getVars($buffer);
+        $buffer = $this->getEspecialVars($buffer);
         
         $buffer = $this->removeComments($buffer);
 
@@ -57,6 +58,7 @@ class Viewer{
         try{
             $buffer = $this->getOB($this->path.$file.'.tpl.php');
             $buffer = $this->getVars($buffer);
+            $buffer = $this->getEspecialVars($buffer);
         }catch(\Exception $er){
             $buffer = "<div class='view error'>Component error: {$er->getMessage()}</div>";
         }

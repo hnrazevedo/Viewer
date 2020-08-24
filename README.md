@@ -23,7 +23,7 @@ O Viewer é um simples componente de administração da camada de visualização
 Viewer is available via Composer:
 
 ```bash 
-"hnrazevedo/Viewer": "^1.0"
+"hnrazevedo/Viewer": "^1.1"
 ```
 
 or run
@@ -60,6 +60,7 @@ $data = [
         [
             'param1' => 1,
             'param2' => 'param2Value'  
+            'param3' => '<a href="#">Parameter3</a>'  
         ]    
     ];
 
@@ -67,32 +68,46 @@ Viewer::create(__DIR__.'/Views/')
       ->render('default', $data);
 ```
 ### Returning data in the view
+
+#### The htmlspecialchars function is used by default as an escape to prevent XSS attacks.
+É utilizado de forma padrão a função htmlspecialchars como escape para evitar ataques XSS.  
+
+#### Sintax:
+Sintaxe:
 ```
+{{ $var }} htmlspecialchars
+```
+
+#### To display information without space use the syntax:
+Para exibir informações sem espace utilize a sintaxe: 
+```
+{{!! $var !!}} htmlspecialchars
+```
+
+#### HTML file example
+```html
 <html>
-    <?= $parameter['param1'] ?>
-    <?= $parameter['param2'] ?>
-</html>
-```
-#### Or
-```
-<html>
-    {{parameter}}
-    {{parameter.param2}}
+    {{ $parameter }}
+    {{ $parameter.param2 }}
+    {{ $parameter.param3 }}
+    {{!! $parameter.param3 !!}}
 </html>
 ```
 #### Note: If there is no variable to replace the value defined in the view, the text will be visible
-#### Result:
-```
+#### HTML file result example:
+```html
 <html>
-    {{parameter}}
+    {{ $parameter }}
     param2Value 
+    <a href="#">Parameter3</a> 
+    <a tag>Parameter</a tag>
 </html>
 ```
 
 ### Import content within the view. 
 ### NOTE: File extension tpl.php
 ### NOTE: File path is from the defined view path in question
-```
+```html
 <html>
     <body>
         <?php $this->include('../Imports/header'); ?>
@@ -105,7 +120,7 @@ Viewer::create(__DIR__.'/Views/')
 ```
 ### If the file is not found, in order to avoid a page break, a div results with an error message instead of include.
 Caso o arquivo não seja encontrado, para não haver quebra de página, é resultado uma div com a mensagem de erro no lugar do include.
-```
+```html
 <html>
     <body>
         <div class='view error'>Component error: Impotation file does not exist: header.tpl.php .</div>
@@ -115,15 +130,15 @@ Caso o arquivo não seja encontrado, para não haver quebra de página, é resul
         <footer>
             ...
         </footer>
-    </b
-<div class="view error"> </div>
+    </body>
+</html>
 ```
 
 ## Support
 
-###### Security: If you discover any security related issues, please email hnrazevedo@gmail.com instead of using the issue tracker.
+###### Security: If you discover any security related issues, please email hnr.azevedo@gmail.com instead of using the issue tracker.
 
-Se você descobrir algum problema relacionado à segurança, envie um e-mail para hnrazevedo@gmail.com em vez de usar o rastreador de problemas.
+Se você descobrir algum problema relacionado à segurança, envie um e-mail para hnr.azevedo@gmail.com em vez de usar o rastreador de problemas.
 
 ## Credits
 
