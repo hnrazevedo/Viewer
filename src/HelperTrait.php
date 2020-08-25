@@ -5,7 +5,7 @@ namespace HnrAzevedo\Viewer;
 use Exception;
 
 trait HelperTrait{
-    use CheckTrait;
+    use CheckTrait, JScriptTrait;
 
     protected function getOB(string $require, array $data = []): string
     {
@@ -29,12 +29,37 @@ trait HelperTrait{
         $response = ob_get_contents();
         ob_end_clean();
 
-        $response = explode(PHP_EOL,$response);
-        foreach($response as $index => $value){
-            $response[$index] = (substr(ltrim($value),0,2) === '//') ? '' : ltrim($value);
+        
+        
+        return $this->treatHTML($response);
+    }
+
+    private function treatHTML(string $html): string
+    {
+        $arrayHtml = explode(PHP_EOL,$html);
+        $html = [];
+
+        $inScript = false;
+        $inComment = false;
+            
+        foreach($arrayHtml as $index => $value){
+            $inScript = $this->checkInScript($inScript, $value);
+            
+
+            if($inScript){
+                $inComment = $this->checkCommentInScript($inComment, $value);
+
+                if(!$this->checkScriptNeed($inComment, $value)){
+                    continue;
+                }else{
+                    $value = $this->treatScript($value);
+                }
+            }
+                
+            $html[$index] = ltrim($value);
         }
         
-        return implode('',$response);
+        return implode('',$html);
     }
 
     protected function initData()
