@@ -31,7 +31,7 @@ trait HelperTrait{
 
         $response = explode(PHP_EOL,$response);
         foreach($response as $index => $value){
-            $response[$index] = ltrim($value);
+            $response[$index] = (substr(ltrim($value),0,2) === '//') ? '' : ltrim($value);
         }
         
         return implode('',$response);

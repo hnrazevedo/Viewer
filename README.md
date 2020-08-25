@@ -23,7 +23,7 @@ O Viewer é um simples componente de administração da camada de visualização
 Viewer is available via Composer:
 
 ```bash 
-"hnrazevedo/Viewer": "^1.1"
+"hnrazevedo/Viewer": "^1.2"
 ```
 
 or run
@@ -132,6 +132,33 @@ Caso o arquivo não seja encontrado, para não haver quebra de página, é resul
         </footer>
     </body>
 </html>
+```
+
+## HTML compression
+### All code returned from a view or include is compressed. Thus, to avoid code problems, all comments are ignored when rendering the content.
+Todo código retornado de uma view ou include é compressado. Com isto, para evitar problemas de código, todos os comentários são ignorados na renderização do conteúdo.
+
+#### Source code
+```html
+<html>
+    <body>
+        <main>
+            <!-- Multi-line 
+                             comment --> ...
+        </main>
+        <footer>
+            ...
+        </footer>
+    </body>
+    <script>
+        ... // Single line comment
+        ,,,
+    </script>
+</html>
+```
+#### Rendered code
+```html
+<html><body><main>...</main><footer>...</footer></body><script>... ,,,</script></html>
 ```
 
 ## Support
