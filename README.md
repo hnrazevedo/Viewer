@@ -151,14 +151,19 @@ Todo código retornado de uma view ou include é compressado. Com isto, para evi
         </footer>
     </body>
     <script>
-        ... // Single line comment
-        ,,,
+        ...; // Single line comment
+        /* comments */ ...; /* comments */
+        /* 
+            Multi-line
+            commnets
+        */
+        ...;
     </script>
 </html>
 ```
 #### Rendered code
 ```html
-<html><body><main>...</main><footer>...</footer></body><script>... ,,,</script></html>
+<html><body><main>...</main><footer>...</footer></body><script>...;...;...;</script></html>
 ```
 
 ## Support
