@@ -37,7 +37,7 @@ composer require hnrazevedo/Viewer
 ### Extensions
 
 - View files: view.php
-- Imported files: tpl.php 
+- Imported files: inc.php 
 
 ### Basic use
 ```php
@@ -105,7 +105,7 @@ Para exibir informações sem espace utilize a sintaxe:
 ```
 
 ### Import content within the view. 
-### NOTE: File extension tpl.php
+### NOTE: File extension inc.php
 ### NOTE: File path is from the defined view path in question
 ```html
 <html>
@@ -123,7 +123,7 @@ Caso o arquivo não seja encontrado, para não haver quebra de página, é resul
 ```html
 <html>
     <body>
-        <div class='view error'>Component error: Impotation file does not exist: header.tpl.php .</div>
+        <div class='view error'>Component error: Impotation file does not exist: header.inc.php .</div>
         <main>
             ...
         </main>

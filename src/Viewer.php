@@ -56,7 +56,7 @@ class Viewer{
     {
         $buffer = '';
         try{
-            $buffer = $this->getOB($this->path.$file.'.tpl.php');
+            $buffer = $this->getOB($this->path.$file.'.inc.php');
             $buffer = $this->getVars($buffer);
             $buffer = $this->getEspecialVars($buffer);
         }catch(\Exception $er){
