@@ -42,8 +42,6 @@ class Viewer{
         
         $buffer = $this->removeComments($buffer);
 
-        $this->saveData();
-
         if(!$return){
             echo $buffer;
             return '';

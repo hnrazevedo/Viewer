@@ -7,6 +7,8 @@ use Exception;
 trait HelperTrait{
     use CheckTrait, JScriptTrait;
 
+    public array $data = [];
+
     protected function getOB(string $require, array $data = []): string
     {
         foreach($data as $variable => $_){
@@ -19,18 +21,14 @@ trait HelperTrait{
             $require = basename($require);
             throw new Exception("Importation file does not exist: {$require} .");
         }
-        
-        $this->initData();
 
-        $_SESSION['data'] = (!empty($data)) ? array_merge($data,$_SESSION['data']) : $_SESSION['data'];
+        $this->data = array_merge($this->data,$data);
 
         ob_start();
         require($require);
         $response = ob_get_contents();
         ob_end_clean();
-
-        
-        
+       
         return $this->treatHTML($response);
     }
 
@@ -45,7 +43,6 @@ trait HelperTrait{
         foreach($arrayHtml as $index => $value){
             $inScript = $this->checkInScript($inScript, $value);
             
-
             if($inScript){
                 $inComment = $this->checkCommentInScript($inComment, $value);
 
@@ -62,32 +59,23 @@ trait HelperTrait{
         return implode('',$html);
     }
 
-    protected function initData()
+    protected function getVars(string $buffer): string
     {
-        $_SESSION['data'] = (empty($_SESSION['data'])) ? null : $_SESSION['data'];
+        return $this->replaceVars($buffer, $this->data);
     }
 
-    protected function getVars(string $buffer,string $prefix = null, ?array $values = null): string
-    {
-        $this->initData();
-
-        $vars = (is_null($values)) ? $_SESSION['data'] : $values;
-
-        return (is_null($vars)) ? $buffer : $this->replace_vars($buffer, $vars, $prefix);
-    }
-
-    protected function replace_vars($buffer, $vars, $prefix): string
+    protected function replaceVars(string $buffer, array $vars, ?string $prefix = ''): string
     {
         foreach ($vars as $key => $value) {
             switch(gettype($value)){
                 case 'array':
-                    $buffer = $this->replace_Array($buffer, $value, $prefix, $key);
+                    $buffer = $this->replaceArray($buffer, $value, $prefix, $key);
                     break;
                 case 'object':
-                    $buffer = $this->replace_Object($buffer, $value, $prefix, $key);
+                    $buffer = $this->replaceObject($buffer, $value, $prefix, $key);
                     break;
                 default:
-                    $buffer = $this->replace_value($buffer, $value, $prefix, $key);
+                    $buffer = $this->replaceValue($buffer, $value, $prefix, $key);
                     break;
             }
         }
@@ -95,7 +83,7 @@ trait HelperTrait{
         return $buffer;
     }
 
-    protected function replace_value(string $buffer, $value, ?string $prefix, string $key): string
+    protected function replaceValue(string $buffer, $value, ?string $prefix, string $key): string
     {
         if(gettype($value)!=='array' && gettype($value)!=='object'){
             while(strstr($buffer,'{{ $'.$prefix.$key.' }}')){
@@ -105,11 +93,11 @@ trait HelperTrait{
         return $buffer;
     }
 
-    protected function replace_Object(string $buffer, object $obj, string $prefix, string $key): string
+    protected function replaceObject(string $buffer, object $obj, string $prefix, string $key): string
     {
-        foreach($obj->get_object_vars() as $field => $val){
+        foreach(get_object_vars($obj) as $field => $val){
             
-            $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
+            $buffer = $this->replaceValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
             while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
                 $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($val) ,$buffer);
@@ -118,10 +106,10 @@ trait HelperTrait{
         return $buffer;
     }
 
-    protected function replace_Array(string $buffer, array $array, ?string $prefix = '', ?string $key = ''): string
+    protected function replaceArray(string $buffer, array $array, ?string $prefix = '', ?string $key = ''): string
     {
         foreach($array as $field => $val){
-            $buffer = $this->replace_value($buffer, $val, $key.'.'.$field.'.' , $field);
+            $buffer = $this->replaceValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
             while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
                 $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($val) ,$buffer);
@@ -141,21 +129,6 @@ trait HelperTrait{
             $buffer = str_replace($comment,'',$buffer);
         }
         return $buffer;
-    }
-
-    protected function saveData(): bool
-    {   
-        if(session_status() !== PHP_SESSION_ACTIVE){
-            return false;
-        }
-        unset($_SESSION['data']);
-
-        if(!empty($_SESSION['save'])){
-            foreach ($_SESSION['save'] as $key => $value) {
-                $_SESSION['data'][$key] = $value;
-            }
-        }
-        return true;
     }
 
 }

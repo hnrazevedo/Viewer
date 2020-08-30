@@ -2,21 +2,15 @@
 
 namespace HnrAzevedo\Viewer;
 
-use Exception;
-
 trait EspecialHelperTrait{
     use HelperTrait;
 
-    protected function getEspecialVars(string $buffer,string $prefix = null, ?array $values = null): string
+    protected function getEspecialVars(string $buffer): string
     {
-        $this->initData();
-
-        $vars = (is_null($values)) ? $_SESSION['data'] : $values;
-
-        return (is_null($vars)) ? $buffer : $this->replaceEspecialVars($buffer, $vars, $prefix);
+        return $this->replaceEspecialVars($buffer, $this->data);
     }
 
-    protected function replaceEspecialVars($buffer, $vars, $prefix): string
+    protected function replaceEspecialVars(string $buffer, array $vars, ?string $prefix = ''): string
     {
         foreach ($vars as $key => $value) {
             switch(gettype($value)){
@@ -47,7 +41,7 @@ trait EspecialHelperTrait{
 
     protected function replaceEspecialObject(string $buffer, object $obj, string $prefix, string $key): string
     {
-        foreach($obj->get_object_vars() as $field => $val){
+        foreach(get_object_vars($obj) as $field => $val){
             
             $buffer = $this->replaceEspecialValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
