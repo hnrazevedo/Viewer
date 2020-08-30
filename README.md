@@ -23,7 +23,7 @@ O Viewer é um simples componente de administração da camada de visualização
 Viewer is available via Composer:
 
 ```bash 
-"hnrazevedo/Viewer": "^1.2"
+"hnrazevedo/Viewer": "^1.3"
 ```
 
 or run
