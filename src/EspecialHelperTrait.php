@@ -46,7 +46,7 @@ trait EspecialHelperTrait{
             $buffer = $this->replaceEspecialValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
             while(strstr($buffer,'{{!! $'.$prefix.$key.'.'.$field.' !!}}')){
-                $buffer = str_replace('{{!! $'.$prefix.$key.'.'.$field.' !!}}', $val ,$buffer);
+                $buffer = str_replace('{{!! $'.$prefix.$key.'.'.$field.' !!}}', $obj->get($field) ,$buffer);
             }
         }
         return $buffer;

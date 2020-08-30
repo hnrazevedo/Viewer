@@ -67,7 +67,8 @@ $data = [
 Viewer::create(__DIR__.'/Views/')
       ->render('default', $data);
 ```
-### Returning data in the view
+
+## Returning data in the view
 
 #### The htmlspecialchars function is used by default as an escape to prevent XSS attacks.
 É utilizado de forma padrão a função htmlspecialchars como escape para evitar ataques XSS.  
@@ -81,7 +82,7 @@ Sintaxe:
 #### To display information without space use the syntax:
 Para exibir informações sem espace utilize a sintaxe: 
 ```
-{{!! $var !!}} htmlspecialchars
+{{!! $var !!}} NO htmlspecialchars
 ```
 
 #### HTML file example
@@ -102,6 +103,17 @@ Para exibir informações sem espace utilize a sintaxe:
     <a href="#">Parameter3</a> 
     <a tag>Parameter</a tag>
 </html>
+```
+
+### NOTE: to return any object, it must have implemented the "get" method, returning the desired value.
+```php
+$user = new Model\User();
+
+Viewer::create(__DIR__.'/Views/')
+      ->render('default', ['user'=>$user]);
+```
+```html
+{{ $user.name }} -> return $user->get('name')
 ```
 
 ### Import content within the view. 
