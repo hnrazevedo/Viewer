@@ -105,7 +105,7 @@ Para exibir informações sem espace utilize a sintaxe:
 </html>
 ```
 
-### NOTE: to return any object, it must have implemented the "get" method, returning the desired value.
+### NOTE: to return any object, it must have implemented the "__get" method, returning the desired value.
 ```php
 $user = new Model\User();
 
@@ -113,7 +113,7 @@ Viewer::create(__DIR__.'/Views/')
       ->render('default', ['user'=>$user]);
 ```
 ```html
-{{ $user.name }} -> return $user->get('name')
+{{ $user.name }} -> return $user->$name
 ```
 
 ### Import content within the view. 

@@ -100,7 +100,7 @@ trait HelperTrait{
             $buffer = $this->replaceValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
             while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
-                $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($obj->get($field)) ,$buffer);
+                $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($obj->$field) ,$buffer);
             }
         }
         return $buffer;
