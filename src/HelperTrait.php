@@ -95,7 +95,9 @@ trait HelperTrait{
 
     protected function replaceObject(string $buffer, object $obj, string $prefix, string $key): string
     {
-        foreach(get_object_vars($obj) as $field => $val){
+        $vars = method_exists($obj,'getVars') ? $obj->getVars() : [];
+        $vars = array_merge($vars, get_object_vars($obj));
+        foreach($vars as $field => $val){
             
             $buffer = $this->replaceValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
