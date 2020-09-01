@@ -105,15 +105,74 @@ Para exibir informações sem espace utilize a sintaxe:
 </html>
 ```
 
-### NOTE: to return any object, it must have implemented the "__get" method, returning the desired value.
+## Returning object properties
+### IMPORTANT: to return any property of an object, the property must be public, to be returned with the "get_object_vars" function, or a function with the name "getVars" must be defined, returning an array with the properties that need to be executed __get.
+
+#### Models\User.php
+```php
+namespace Model;
+
+class User{
+    public string $name = '';
+    private string $lastname = 'Azevedo';
+    private string $testValue = '123';
+
+    public array $data = [];
+
+    public function __construct()
+    {
+        $this->data = ['email','password','birth','username','testValue'];
+    }
+
+    public function getVars(): array
+    {
+        $vars = [];
+        foreach($this->data as $var => $value){
+            $vars[$var] = null;
+        }
+        return $vars;
+    }
+
+    public function __set(string $field, $value)
+    {
+        $this->data[$field] = $value;
+    }
+
+    public function __get(string $field)
+    {
+        return $this->data[$field];
+    }
+}
+```
+#### Example\User.php
 ```php
 $user = new Model\User();
 
-Viewer::create(__DIR__.'/Views/')
-      ->render('default', ['user'=>$user]);
+$user->name = 'Henri';
+$user->email = 'hnr.azevedo@gmail.com';
+$user->birth = '28/09/1996';
+$user->username = 'hnrazevedo';
+$user->testValue = '321';
+
+Viewer::create(__DIR__.'/Views/')->render('default', ['user'=>$user]);
 ```
+#### default.view.php
 ```html
-{{ $user.name }} -> return $user->$name
+{{ $user.name }} -> execute $user->name -> $user->name
+{{ $user.email }} -> execute $user->email -> $user->__get('email')
+{{ $user.bitrh }} -> execute $user->bitrh -> $user->__get('bitrh')
+{{ $user.username }} -> execute $user->bitrh -> $user->__get('username')
+{{ $user.lastname }} -> It is not executed, as private properties are not returned in the "get_object_vars" function
+{{ $user.testValue }} -> execute $user->testValue -> $user->__get('testValue')
+```
+#### Result of default.view.php
+```html
+Henri Azevedo 
+hnr.azevedo@gmail.com 
+28/09/1996 
+hnrazevedo
+{{ $user.lastname }}
+321
 ```
 
 ### Import content within the view. 
