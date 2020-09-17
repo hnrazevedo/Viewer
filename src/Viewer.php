@@ -52,15 +52,14 @@ class Viewer{
 
     public function include(string $file): void
     {
-        $buffer = '';
         try{
             $buffer = $this->getOB($this->path.$file.'.inc.php');
             $buffer = $this->getVars($buffer);
             $buffer = $this->getEspecialVars($buffer);
+            echo $buffer;
         }catch(\Exception $er){
-            $buffer = "<div class='view error'>Component error: {$er->getMessage()}</div>";
+            echo "<div class='view error'>Component error: {$er->getMessage()}</div>";
         }
-        echo $buffer;
     }
 
 }

@@ -39,7 +39,7 @@ trait EspecialHelperTrait{
         return $buffer;
     }
 
-    protected function replaceEspecialObject(string $buffer, object $obj, string $prefix, string $key): string
+    protected function replaceEspecialObject(string $buffer, object $obj, ?string $prefix, string $key): string
     {
         $vars = method_exists($obj,'getVars') ? $obj->getVars() : [];
         $vars = array_merge($vars, get_object_vars($obj));
