@@ -11,7 +11,9 @@ trait HelperTrait{
 
     protected function getOB(string $require, array $data = []): string
     {
-        foreach($data as $variable => $_){
+        $this->data = array_merge($this->data,$data);
+
+        foreach($this->data as $variable => $_){
             $$variable = $_;
         }
         
@@ -21,8 +23,6 @@ trait HelperTrait{
             $require = basename($require);
             throw new Exception("Importation file does not exist: {$require} .");
         }
-
-        $this->data = array_merge($this->data,$data);
 
         ob_start();
         require($require);
