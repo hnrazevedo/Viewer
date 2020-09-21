@@ -159,11 +159,11 @@ Viewer::create(__DIR__.'/Views/')->render('default', ['user'=>$user]);
 #### default.view.php
 ```html
 {{ "{{ $user.name " }}}} -> execute $user->name -> $user->name
-{{ "{{ $user.email }}}} -> execute $user->email -> $user->__get('email')
-{{ "{{ $user.bitrh }}}} -> execute $user->bitrh -> $user->__get('bitrh')
-{{ "{{ $user.username }}}} -> execute $user->bitrh -> $user->__get('username')
-{{ "{{ $user.lastname }}}} -> It is not executed, as private properties are not returned in the "get_object_vars" function
-{{ "{{ $user.testValue }}}} -> execute $user->testValue -> $user->__get('testValue')
+{{ "{{ $user.email " }}}} -> execute $user->email -> $user->__get('email')
+{{ "{{ $user.bitrh " }}}} -> execute $user->bitrh -> $user->__get('bitrh')
+{{ "{{ $user.username " }}}} -> execute $user->bitrh -> $user->__get('username')
+{{ "{{ $user.lastname " }}}} -> It is not executed, as private properties are not returned in the "get_object_vars" function
+{{ "{{ $user.testValue " }}}} -> execute $user->testValue -> $user->__get('testValue')
 ```
 #### Result of default.view.php
 ```html
@@ -171,7 +171,7 @@ Henri Azevedo
 hnr.azevedo@gmail.com 
 28/09/1996 
 hnrazevedo
-{{ "{{ $user.lastname }}}}
+{{ "{{ $user.lastname " }}}}
 321
 ```
 
