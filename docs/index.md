@@ -76,29 +76,29 @@ Viewer::create(__DIR__.'/Views/')
 #### Sintax:
 Sintaxe:
 ```
-{{ $var }} htmlspecialchars
+{{ "{{ $var " }} htmlspecialchars
 ```
 
 #### To display information without space use the syntax:
 Para exibir informações sem espace utilize a sintaxe: 
 ```
-{{!! $var !!}} NO htmlspecialchars
+{{ "{{!! $var " !!}} NO htmlspecialchars
 ```
 
 #### HTML file example
-```
+```html
 <html>
-    {{ $parameter }}
-    {{ $parameter.param2 }}
-    {{ $parameter.param3 }}
-    {{!! $parameter.param3 !!}}
+    {{ "{{ $parameter " }}
+    {{ "{{ $parameter.param2 " }}
+    {{ "{{ $parameter.param3 " }}
+    {{ "{{ !! $parameter.param3 " !!}}
 </html>
 ```
 #### Note: If there is no variable to replace the value defined in the view, the text will be visible
 #### HTML file result example:
-```
+```html
 <html>
-    {{ $parameter }}
+    {{ "{{ $parameter " }}
     param2Value 
     <a href="#">Parameter3</a> 
     <a tag>Parameter</a tag>
