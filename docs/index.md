@@ -86,7 +86,7 @@ Para exibir informações sem espace utilize a sintaxe:
 ```
 
 #### HTML file example
-```html
+```
 <html>
     {{ $parameter }}
     {{ $parameter.param2 }}
@@ -96,7 +96,7 @@ Para exibir informações sem espace utilize a sintaxe:
 ```
 #### Note: If there is no variable to replace the value defined in the view, the text will be visible
 #### HTML file result example:
-```html
+```
 <html>
     {{ $parameter }}
     param2Value 
