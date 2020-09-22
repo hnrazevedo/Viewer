@@ -12,6 +12,10 @@
 
 O Viewer é um simples componente de administração da camada de visualização de projetos MVC. Seu autor não é profissional da área de desenvolvimento, apenas alguem da área de Tecnologia que está aperfeiçoando seus conhecimentos.
 
+### Update 
+#### I will soon update the project in order to implement the PSR.
+Em breve atualizarei o projeto a fim de implementar a PSR.
+
 ### Highlights
 
 - Easy to set up (Fácil de configurar)
