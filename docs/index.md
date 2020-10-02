@@ -4,11 +4,11 @@
 [![Latest Version](https://img.shields.io/github/v/tag/hnrazevedo/Viewer?label=version&style=flat-square)](https://github.com/hnrazevedo/Viewer/releases)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/hnrazevedo/Viewer?style=flat-square)](https://scrutinizer-ci.com/g/hnrazevedo/Viewer/?branch=master)
 [![Build Status](https://img.shields.io/scrutinizer/build/g/hnrazevedo/Viewer?style=flat-square)](https://scrutinizer-ci.com/g/hnrazevedo/Viewer/build-status/master)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/hnrazevedo/Viewer?style=flat-square)](https://packagist.org/packages/hnrazevedo/Viewer)
 [![Total Downloads](https://img.shields.io/packagist/dt/hnrazevedo/Viewer?style=flat-square)](https://packagist.org/packages/hnrazevedo/Viewer)
 
-###### The Viewer is a simple component of managing the MVC project visualization layer. Its author is not a professional in the development area, just someone in the Technology area who is improving his knowledge.
+###### The Viewer is a simple component of managing the MVC project visualization layer. It can be used individually statically or together as middleware. Its author is not a professional in the development area, just someone in the Technology area who is improving his knowledge.
 
 O Viewer é um simples componente de administração da camada de visualização de projetos MVC. Ele pode ser utilizado de forma individualmente de forma estática ou em conjunto como middleware.
 Seu autor não é profissional da área de desenvolvimento, apenas alguem da área de Tecnologia que está aperfeiçoando seus conhecimentos.
@@ -27,7 +27,7 @@ Viewer is available via Composer:
 "hnrazevedo/Viewer": "^2.0"
 ```
 
-or in at terminal
+or run
 
 ```bash
 composer require hnrazevedo/Viewer
@@ -46,7 +46,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use HnrAzevedo\Viewer\Viewer;
 
-Viewer::path(__DIR__.'/Views/') 
+Viewer::path(__DIR__.'/Views/') /* View file path */
       ->render('default');    
 ```
 
@@ -65,43 +65,41 @@ $data = [
         ]    
     ];
 
-Viewer::create(__DIR__.'/Views/')
+Viewer::path(__DIR__.'/Views/')
       ->render('default', $data);
 ```
 
 ## Returning data in the view
 
 #### The htmlspecialchars function is used by default as an escape to prevent XSS attacks.
-
 É utilizado de forma padrão a função htmlspecialchars como escape para evitar ataques XSS.  
 
 #### Sintax:
 Sintaxe:
 ```
-{{ $var }} htmlspecialchars
+{{ "{{ $var " }}}} htmlspecialchars
 ```
 
 #### To display information without space use the syntax:
-
 Para exibir informações sem espace utilize a sintaxe: 
 ```
-{{!! $var !!}} NO htmlspecialchars
+{{ "{{!! $var !!" }}}} NO htmlspecialchars
 ```
 
 #### HTML file example
 ```html
 <html>
-    {{ $parameter }}
-    {{ $parameter.param2 }}
-    {{ $parameter.param3 }}
-    {{!! $parameter.param3 !!}}
+    {{ "{{ $parameter "}}}}
+    {{ "{{ $parameter.param2 " }}}}
+    {{ "{{ $parameter.param3 "  }}}}
+    {{ "{{!! $parameter.param3 !!"  }}}}
 </html>
 ```
 #### Note: If there is no variable to replace the value defined in the view, the text will be visible
 #### HTML file result example:
 ```html
 <html>
-    {{ $parameter }}
+    {{ "{{ $parameter " }}}}
     param2Value 
     <a href="#">Parameter3</a> 
     <a tag>Parameter</a tag>
@@ -161,12 +159,12 @@ Viewer::path(__DIR__.'/Views/')->render('default', ['user'=>$user]);
 ```
 #### default.view.php
 ```html
-{{ $user.name }} -> execute $user->name -> $user->name
-{{ $user.email }} -> execute $user->email -> $user->__get('email')
-{{ $user.bitrh }} -> execute $user->bitrh -> $user->__get('bitrh')
-{{ $user.username }} -> execute $user->bitrh -> $user->__get('username')
-{{ $user.lastname }} -> It is not executed, as private properties are not returned in the "get_object_vars" function
-{{ $user.testValue }} -> execute $user->testValue -> $user->__get('testValue')
+{{ "{{ $user.name " }}}} -> execute $user->name -> $user->name
+{{ "{{ $user.email " }}}} -> execute $user->email -> $user->__get('email')
+{{ "{{ $user.bitrh " }}}} -> execute $user->bitrh -> $user->__get('bitrh')
+{{ "{{ $user.username " }}}} -> execute $user->bitrh -> $user->__get('username')
+{{ "{{ $user.lastname " }}}} -> It is not executed, as private properties are not returned in the "get_object_vars" function
+{{ "{{ $user.testValue " }}}} -> execute $user->testValue -> $user->__get('testValue')
 ```
 #### Result of default.view.php
 ```html
@@ -174,7 +172,7 @@ Henri Azevedo
 hnr.azevedo@gmail.com 
 28/09/1996 
 hnrazevedo
-{{ $user.lastname }}
+{{ "{{ $user.lastname " }}}}
 321
 ```
 
@@ -192,8 +190,8 @@ hnrazevedo
     </body>
 </html>
 ```
-### If the file is not found, in order to avoid a page break, a div results with an error message instead of include.
-Caso o arquivo não seja encontrado, para não haver quebra de página, é resultado uma div com a mensagem de erro no lugar do include.
+### If the file is not found, in order to avoid a page break, a div results with an error message instead of import.
+Caso o arquivo não seja encontrado, para não haver quebra de página, é resultado uma div com a mensagem de erro no lugar do import.
 ```html
 <html>
     <body>
@@ -209,9 +207,8 @@ Caso o arquivo não seja encontrado, para não haver quebra de página, é resul
 ```
 
 ## HTML compression
-### All code returned from a view or include is compressed. Thus, to avoid code problems, all comments are ignored when rendering the content.
-
-Todo código retornado de uma view ou include é compressado. Com isto, para evitar problemas de código, todos os comentários são ignorados na renderização do conteúdo.
+### All code returned from a view or import is compressed. Thus, to avoid code problems, all comments are ignored when rendering the content.
+Todo código retornado de uma view ou import é compressado. Com isto, para evitar problemas de código, todos os comentários são ignorados na renderização do conteúdo.
 
 #### Source code
 ```html

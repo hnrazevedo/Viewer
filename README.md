@@ -8,7 +8,7 @@
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/hnrazevedo/Viewer?style=flat-square)](https://packagist.org/packages/hnrazevedo/Viewer)
 [![Total Downloads](https://img.shields.io/packagist/dt/hnrazevedo/Viewer?style=flat-square)](https://packagist.org/packages/hnrazevedo/Viewer)
 
-###### The Viewer is a simple component of managing the MVC project visualization layer. Its author is not a professional in the development area, just someone in the Technology area who is improving his knowledge.
+###### The Viewer is a simple component of managing the MVC project visualization layer. It can be used individually statically or together as middleware. Its author is not a professional in the development area, just someone in the Technology area who is improving his knowledge.
 
 O Viewer é um simples componente de administração da camada de visualização de projetos MVC. Ele pode ser utilizado de forma individualmente de forma estática ou em conjunto como middleware.
 Seu autor não é profissional da área de desenvolvimento, apenas alguem da área de Tecnologia que está aperfeiçoando seus conhecimentos.
@@ -65,7 +65,7 @@ $data = [
         ]    
     ];
 
-Viewer::create(__DIR__.'/Views/')
+Viewer::path(__DIR__.'/Views/')
       ->render('default', $data);
 ```
 
