@@ -2,64 +2,104 @@
 
 namespace HnrAzevedo\Viewer;
 
-class Viewer{
-    use EspecialHelperTrait, CheckTrait;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+use HnrAzevedo\Http\Uri;
 
-    private static $instance = null;
-    private string $path = '';
+use HnrAzevedo\Http\Factory;
 
-    public function __construct()
+final class Viewer implements ViewerInterface
+{
+    use Helper;
+
+    private static Viewer $instance;
+    private static string $path = '';
+    private static bool $middleware;
+    private ServerRequestInterface $serverRequest;
+
+    public static function getInstance(): Viewer
     {
-        return $this;
-    }
-
-    public static function getInstance(string $path): Viewer
-    {
-        if(is_null(self::$instance)){
-            self::$instance = new self();
-        }
-        self::$instance->path = $path;
+        self::$instance = (isset(self::$instance)) ? self::$instance : new self();
         return self::$instance;
     }
 
-    public static function create(string $path): Viewer
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        return self::getInstance($path);
+        if(null === $request->getAttribute('viewer')){
+            throw new \RuntimeException('The path and file parameters for viewing were not defined in the request');
+        }
+
+        self::$path = $request->getAttribute('viewer')['path'];
+
+        $buffer = $this->getInstance()->render($request->getAttribute('viewer')['file'],
+            (isset($request->getAttribute('viewer')['data'])) ? $request->getAttribute('viewer')['data'] : [] );
+
+        $request = $request->withBody((new Factory())->createStream($buffer));
+
+        return $handler->handle($request);
     }
 
-    public function render(string $file, array $data = [], bool $return = false): string
+    public static function render(string $file, ?array $data = []): string
     {
-        if(!headers_sent()){
-            header('Content-Type: text/html; charset=utf-8');
-        }
+        self::getInstance()->data = $data;
         
-        $this->check_viewExist($file);
-
-        $buffer = $this->getOB($this->path . DIRECTORY_SEPARATOR . $file . '.view.php', $data);
-        
-        $buffer = $this->getVars($buffer);
-        $buffer = $this->getEspecialVars($buffer);
-        
-        $buffer = $this->removeComments($buffer);
-
-        if(!$return){
-            echo $buffer;
+        if(!isset(self::$middleware)){
+            self::getInstance()->handle($file);
             return '';
         }
-        
-        return $buffer;
+
+        return self::getInstance()->getBody($file.'.view.php');
     }
 
-    public function include(string $file): void
+    private function handle(string $file): void
+    {
+        self::$middleware = false;
+        
+        $serverRequest = (new Factory())->createServerRequest(
+            $_SERVER['REQUEST_METHOD'], 
+            new Uri($_SERVER['REQUEST_URI'])
+        );
+    
+        $serverRequest = $serverRequest->withAttribute('viewer',[
+            'path' => self::$path,
+            'file' => $file,
+            'data' => self::getInstance()->data
+        ]);
+
+
+        self::getInstance()->process($serverRequest, new class implements RequestHandlerInterface{
+            public function handle(ServerRequestInterface $request): ResponseInterface
+            {
+                echo $request->getBody()->getContents();
+                return (new Factory())->createResponse(200);
+            }
+        });
+
+    }
+
+    public static function path(string $path): Viewer
+    {
+        self::$path = $path;
+        return self::getInstance();
+    }
+
+    public static function import(string $file): void
     {
         try{
-            $buffer = $this->getOB($this->path.$file.'.inc.php');
-            $buffer = $this->getVars($buffer);
-            $buffer = $this->getEspecialVars($buffer);
-            echo $buffer;
+            echo self::getInstance()->getBody($file.'.inc.php');
         }catch(\Exception $er){
             echo "<div class='view error'>Component error: {$er->getMessage()}</div>";
         }
+    }
+
+    private function getBody(string $file)
+    {
+        $buffer = $this->getInstance()->getOB(self::$path . DIRECTORY_SEPARATOR . $file);
+        $buffer = $this->getInstance()->getVars($buffer);
+        $buffer = $this->getInstance()->getVars($buffer, false);
+        $buffer = $this->getInstance()->removeComments($buffer);
+        return $buffer;
     }
 
 }

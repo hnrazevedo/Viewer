@@ -2,26 +2,27 @@
 
 namespace HnrAzevedo\Viewer;
 
-use Exception;
+trait Helper
+{
+    use JScriptTrait;
+    
+    protected string $treat = '';
+    protected bool $especial = true;
+    protected array $data = [];
 
-trait HelperTrait{
-    use CheckTrait, JScriptTrait;
-
-    public array $data = [];
-
-    protected function getOB(string $require, array $data = []): string
+    protected function getOB(string $require, ?array $data = []): string
     {
-        $this->data = array_merge($this->data,$data);
+        $this->data = array_merge($this->data, $data);
 
         foreach($this->data as $variable => $_){
             $$variable = $_;
         }
         
-        $_ = (array_key_exists('_',$data)) ? $data['_'] : null;
+        $_ = (isset($data['_'])) ?? $data['_'];
 
         if(!file_exists($require)){
             $require = basename($require);
-            throw new Exception("Importation file does not exist: {$require} .");
+            throw new \RuntimeException("Importation file does not exist: {$require}");
         }
 
         ob_start();
@@ -34,7 +35,7 @@ trait HelperTrait{
 
     private function treatHTML(string $html): string
     {
-        $arrayHtml = explode(PHP_EOL,$html);
+        $arrayHtml = explode(PHP_EOL, $html);
         $html = [];
 
         $inScript = false;
@@ -48,9 +49,9 @@ trait HelperTrait{
 
                 if(!$this->checkScriptNeed($inComment, $value)){
                     continue;
-                }else{
-                    $value = $this->treatScript($value);
                 }
+                
+                $value = $this->treatScript($value);
             }
                 
             $html[$index] = ltrim($value);
@@ -59,8 +60,10 @@ trait HelperTrait{
         return implode('',$html);
     }
 
-    protected function getVars(string $buffer): string
+    protected function getVars(string $buffer, ?bool $treat = true): string
     {
+        $this->treat = ($treat) ? '' : '!!';
+        $this->especial = $treat;
         return $this->replaceVars($buffer, $this->data);
     }
 
@@ -74,8 +77,8 @@ trait HelperTrait{
                 case 'object':
                     $buffer = $this->replaceObject($buffer, $value, $prefix, $key);
                     break;
-                default:
-                    $buffer = $this->replaceValue($buffer, $value, $prefix, $key);
+                default:                
+                    $buffer = (is_scalar($value)) ? $this->replaceValue($buffer, $value, $prefix, $key) : $buffer;
                     break;
             }
         }
@@ -85,11 +88,12 @@ trait HelperTrait{
 
     protected function replaceValue(string $buffer, $value, ?string $prefix, string $key): string
     {
-        if(gettype($value)!=='array' && gettype($value)!=='object'){
-            while(strstr($buffer,'{{ $'.$prefix.$key.' }}')){
-                $buffer = str_replace('{{ $'.$prefix.$key.' }}', htmlspecialchars($value) ,$buffer);
+        if(is_scalar($value)){
+            while(strstr($buffer, "{{{$this->treat} \${$prefix}{$key} {$this->treat}}}")){
+                $buffer = str_replace("{{{$this->treat} \${$prefix}{$key} {$this->treat}}}", (($this->especial) ? htmlspecialchars($value) : $value) ,$buffer);
             }
         }
+
         return $buffer;
     }
 
@@ -97,13 +101,22 @@ trait HelperTrait{
     {
         $vars = method_exists($obj,'getVars') ? $obj->getVars() : [];
         $vars = array_merge($vars, get_object_vars($obj));
-        foreach($vars as $field => $val){
-            
-            $buffer = $this->replaceValue($buffer, $val, $key.'.'.$field.'.' , $field);
 
-            while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
-                $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($obj->$field) ,$buffer);
+        foreach($vars as $field => $val){
+            $buffer = $this->replaceValue($buffer, $val, $key.'.' , $field);
+
+            if(is_array($obj->$field)){
+                $buffer = $this->replaceVars($buffer, $obj->$field, $key.'.'.$field.'.');
             }
+        
+            if(is_object($obj->$field)){
+                $buffer = $this->replaceObject($buffer, $obj->$field, $key.'.', $key.'.'.$field);
+            }
+
+            while(strstr($buffer, "{{{$this->treat} \${$prefix}{$key}.{$field} {$this->treat}}}")){
+                $buffer = str_replace("{{{$this->treat} \${$prefix}{$key}.{$field} {$this->treat}}}", (($this->especial) ? htmlspecialchars($obj->$field) : $obj->$field) ,$buffer);
+            }
+            
         }
         return $buffer;
     }
@@ -111,10 +124,10 @@ trait HelperTrait{
     protected function replaceArray(string $buffer, array $array, ?string $prefix = '', ?string $key = ''): string
     {
         foreach($array as $field => $val){
-            $buffer = $this->replaceValue($buffer, $val, $key.'.'.$field.'.' , $field);
+            $buffer = $this->replaceValue($buffer, $val, $key.'.', $field);
 
-            while(strstr($buffer,'{{ $'.$prefix.$key.'.'.$field.' }}')){
-                $buffer = str_replace('{{ $'.$prefix.$key.'.'.$field.' }}', htmlspecialchars($val) ,$buffer);
+            while(strstr($buffer, "{{{$this->treat} \${$prefix}{$key}.{$field} {$this->treat}}}")){
+                $buffer = str_replace("{{{$this->treat} \${$prefix}{$key}.{$field} {$this->treat}}}", (($this->especial) ? htmlspecialchars($val) : $val) ,$buffer);
             }
         }
         return $buffer;

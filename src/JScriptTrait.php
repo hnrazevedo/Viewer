@@ -2,8 +2,8 @@
 
 namespace HnrAzevedo\Viewer;
 
-
-trait JScriptTrait{
+trait JScriptTrait
+{
 
     protected function checkInScript(bool $inScript, string $value): bool
     {
@@ -19,11 +19,10 @@ trait JScriptTrait{
     protected function checkCommentInScript(bool $inComment, string $value): bool
     {
         if(strpos($value,'/*') && !strpos($value,'*/')){
-            $inComment = true;
-        }else{
-            $inComment = (strpos($value,'*/')) ? false : $inComment;
+            return true;
         }
-        return $inComment;
+        
+        return (strpos($value,'*/')) ? false : $inComment;
     }
 
     protected function checkScriptNeed(bool $inComment, string $value): bool
@@ -40,9 +39,11 @@ trait JScriptTrait{
             $replace = substr($value,strripos ($value,'/*'),strripos ($value,'*/')+2);
             $value = str_replace($replace,'',$value);
         }
+
         if(strpos($value,'*/')){
             $value = substr($value,strpos($value,'*/')+2);
         }
+        
         return $value;
     }
 
