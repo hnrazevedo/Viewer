@@ -10,11 +10,8 @@
 
 ###### The Viewer is a simple component of managing the MVC project visualization layer. Its author is not a professional in the development area, just someone in the Technology area who is improving his knowledge.
 
-O Viewer é um simples componente de administração da camada de visualização de projetos MVC. Seu autor não é profissional da área de desenvolvimento, apenas alguem da área de Tecnologia que está aperfeiçoando seus conhecimentos.
-
-### Update 
-#### I will soon update the project in order to implement the PSR.
-Em breve atualizarei o projeto a fim de implementar a PSR.
+O Viewer é um simples componente de administração da camada de visualização de projetos MVC. Ele pode ser utilizado de forma individualmente de forma estática ou em conjunto como middleware.
+Seu autor não é profissional da área de desenvolvimento, apenas alguem da área de Tecnologia que está aperfeiçoando seus conhecimentos.
 
 ### Highlights
 
