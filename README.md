@@ -4,7 +4,7 @@
 [![Latest Version](https://img.shields.io/github/v/tag/hnrazevedo/Viewer?label=version&style=flat-square)](https://github.com/hnrazevedo/Viewer/releases)
 [![Scrutinizer Code Quality](https://img.shields.io/scrutinizer/quality/g/hnrazevedo/Viewer?style=flat-square)](https://scrutinizer-ci.com/g/hnrazevedo/Viewer/?branch=master)
 [![Build Status](https://img.shields.io/scrutinizer/build/g/hnrazevedo/Viewer?style=flat-square)](https://scrutinizer-ci.com/g/hnrazevedo/Viewer/build-status/master)
-[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE)
+[![Software License](https://img.shields.io/badge/license-MIT-brightgreen.svg?style=flat-square)](LICENSE.md)
 [![PHP from Packagist](https://img.shields.io/packagist/php-v/hnrazevedo/Viewer?style=flat-square)](https://packagist.org/packages/hnrazevedo/Viewer)
 [![Total Downloads](https://img.shields.io/packagist/dt/hnrazevedo/Viewer?style=flat-square)](https://packagist.org/packages/hnrazevedo/Viewer)
 
@@ -19,7 +19,7 @@ Em breve atualizarei o projeto a fim de implementar a PSR.
 ### Highlights
 
 - Easy to set up (Fácil de configurar)
-- Simple controller interface (Interface de controlador simples)
+- Follows standard PSR-15 (Segue padrão o PSR-15)
 - Composer ready (Pronto para o composer)
 
 ## Installation
@@ -27,10 +27,10 @@ Em breve atualizarei o projeto a fim de implementar a PSR.
 Viewer is available via Composer:
 
 ```bash 
-"hnrazevedo/Viewer": "^1.3"
+"hnrazevedo/Viewer": "^2.0"
 ```
 
-or run
+or in at terminal
 
 ```bash
 composer require hnrazevedo/Viewer
@@ -49,7 +49,7 @@ require __DIR__.'/../vendor/autoload.php';
 
 use HnrAzevedo\Viewer\Viewer;
 
-Viewer::create(__DIR__.'/Views/') /* View file path */
+Viewer::path(__DIR__.'/Views/') 
       ->render('default');    
 ```
 
@@ -75,6 +75,7 @@ Viewer::create(__DIR__.'/Views/')
 ## Returning data in the view
 
 #### The htmlspecialchars function is used by default as an escape to prevent XSS attacks.
+
 É utilizado de forma padrão a função htmlspecialchars como escape para evitar ataques XSS.  
 
 #### Sintax:
@@ -84,6 +85,7 @@ Sintaxe:
 ```
 
 #### To display information without space use the syntax:
+
 Para exibir informações sem espace utilize a sintaxe: 
 ```
 {{!! $var !!}} NO htmlspecialchars
@@ -158,7 +160,7 @@ $user->birth = '28/09/1996';
 $user->username = 'hnrazevedo';
 $user->testValue = '321';
 
-Viewer::create(__DIR__.'/Views/')->render('default', ['user'=>$user]);
+Viewer::path(__DIR__.'/Views/')->render('default', ['user'=>$user]);
 ```
 #### default.view.php
 ```html
@@ -185,11 +187,11 @@ hnrazevedo
 ```html
 <html>
     <body>
-        <?php $this->include('../Imports/header'); ?>
+        <?php $this->import('../Imports/header'); ?>
         <main>
             ...
         </main>
-        <?php $this->include('../Imports/footer'); ?>
+        <?php $this->import('../Imports/footer'); ?>
     </body>
 </html>
 ```
@@ -211,6 +213,7 @@ Caso o arquivo não seja encontrado, para não haver quebra de página, é resul
 
 ## HTML compression
 ### All code returned from a view or include is compressed. Thus, to avoid code problems, all comments are ignored when rendering the content.
+
 Todo código retornado de uma view ou include é compressado. Com isto, para evitar problemas de código, todos os comentários são ignorados na renderização do conteúdo.
 
 #### Source code
