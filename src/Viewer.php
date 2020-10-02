@@ -16,7 +16,6 @@ final class Viewer implements ViewerInterface
     private static Viewer $instance;
     private static string $path = '';
     private static bool $middleware;
-    private ServerRequestInterface $serverRequest;
 
     public static function getInstance(): Viewer
     {

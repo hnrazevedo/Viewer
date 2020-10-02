@@ -10,5 +10,5 @@ $data = [
     'obj' => new User()
 ];
 
-//require "DefaultUseExample.php";
-require "MiddlewareExample.php";
+require "DefaultUseExample.php";
+//require "MiddlewareExample.php";

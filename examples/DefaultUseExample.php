@@ -1,8 +1,6 @@
 
 <?php
 
-
-
 use HnrAzevedo\Viewer\Viewer;
 
 /* NOTE: in case of error an exception is thrown */

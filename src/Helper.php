@@ -105,18 +105,30 @@ trait Helper
         foreach($vars as $field => $val){
             $buffer = $this->replaceValue($buffer, $val, $key.'.' , $field);
 
-            if(is_array($obj->$field)){
-                $buffer = $this->replaceVars($buffer, $obj->$field, $key.'.'.$field.'.');
-            }
-        
-            if(is_object($obj->$field)){
-                $buffer = $this->replaceObject($buffer, $obj->$field, $key.'.', $key.'.'.$field);
-            }
+
+            $buffer = $this->checkArray($buffer, $obj->$field, $key.'.'.$field.'.');
+            $buffer = $this->checkObject($buffer, $obj->$field, $key.'.'.$field.'.',  $key.'.'.$field);
 
             while(strstr($buffer, "{{{$this->treat} \${$prefix}{$key}.{$field} {$this->treat}}}")){
                 $buffer = str_replace("{{{$this->treat} \${$prefix}{$key}.{$field} {$this->treat}}}", (($this->especial) ? htmlspecialchars($obj->$field) : $obj->$field) ,$buffer);
             }
             
+        }
+        return $buffer;
+    }
+
+    private function checkArray(string $buffer, $obj, string $prefix): string
+    {
+        if(is_array($obj)){
+            $buffer = $this->replaceVars($buffer, $obj, $prefix);
+        }
+        return $buffer;
+    }
+
+    private function checkObject(string $buffer, $obj, string $prefix, string $key): string
+    {
+        if(is_object($obj)){
+            $buffer = $this->replaceObject($buffer, $obj, $prefix, $key);
         }
         return $buffer;
     }

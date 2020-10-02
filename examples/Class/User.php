@@ -2,6 +2,9 @@
 
 require 'Address.php';
 
+/**
+ * @property string $email
+ */
 class User{
     public string $name = 'Henri Azevedo';
     public array $values = [1 => 'param1'];
