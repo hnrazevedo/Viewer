@@ -15,7 +15,7 @@ final class Viewer implements ViewerInterface
 
     private static Viewer $instance;
     private static string $path = '';
-    private static bool $middleware;
+    private bool $middleware;
 
     public static function getInstance(): Viewer
     {
@@ -53,7 +53,7 @@ final class Viewer implements ViewerInterface
 
     private function handle(string $file): void
     {
-        self::$middleware = false;
+        self::getInstance()->middleware  = false;
         
         $serverRequest = (new Factory())->createServerRequest(
             $_SERVER['REQUEST_METHOD'], 
@@ -65,7 +65,6 @@ final class Viewer implements ViewerInterface
             'file' => $file,
             'data' => self::getInstance()->data
         ]);
-
 
         self::getInstance()->process($serverRequest, new class implements RequestHandlerInterface{
             public function handle(ServerRequestInterface $request): ResponseInterface
@@ -80,6 +79,7 @@ final class Viewer implements ViewerInterface
     public static function path(string $path): Viewer
     {
         self::$path = $path;
+        unset(self::getInstance()->middleware);
         return self::getInstance();
     }
 
