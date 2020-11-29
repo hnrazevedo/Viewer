@@ -46,8 +46,34 @@ require __DIR__.'/../vendor/autoload.php';
 
 use HnrAzevedo\Viewer\Viewer;
 
+/**
+ * Render method:
+ * string $filename
+ * ?array $data
+ * ?bool $return
+*/
+
 Viewer::path(__DIR__.'/Views/') /* View file path */
       ->render('default');    
+```
+
+### Return rendering
+###### To return the content in a variable instead of being rendered, use the optional parameter of the render method
+Para retornar em uma váriavel o conteúdo ao invés de ser renderizado, utilize o parametro opcional do método render 
+
+```php
+require __DIR__.'/../vendor/autoload.php';
+
+use HnrAzevedo\Viewer\Viewer;
+
+/**
+ * Render method:
+ * string $filename
+ * ?array $data
+ * ?bool $return
+*/
+
+$html = Viewer::path(__DIR__.'/Views/')->render('default', null, true);    
 ```
 
 ### Data transfer between the view and the controller

@@ -39,11 +39,11 @@ final class Viewer implements ViewerInterface
         return $handler->handle($request);
     }
 
-    public static function render(string $file, ?array $data = []): string
+    public static function render(string $file, ?array $data = [], ?bool $return = false): string
     {
         self::getInstance()->data = $data;
         
-        if(!isset(self::$middleware)){
+        if(!isset(self::$middleware) && $return !== true){
             self::getInstance()->handle($file);
             return '';
         }
