@@ -31,8 +31,9 @@ final class Viewer implements ViewerInterface
 
         self::$path = $request->getAttribute('viewer')['path'];
 
-        $buffer = $this->getInstance()->render($request->getAttribute('viewer')['file'],
-            (isset($request->getAttribute('viewer')['data'])) ? $request->getAttribute('viewer')['data'] : [] );
+        $data = (isset($request->getAttribute('viewer')['data'])) ? $request->getAttribute('viewer')['data'] : [];
+
+        $buffer = $this->getInstance()->render($request->getAttribute('viewer')['file'], $data, true);
 
         $request = $request->withBody((new Factory())->createStream($buffer));
 
@@ -42,8 +43,8 @@ final class Viewer implements ViewerInterface
     public static function render(string $file, ?array $data = [], ?bool $return = false): string
     {
         self::getInstance()->data = $data;
-        
-        if(!isset(self::$middleware) && $return !== true){
+
+        if(!isset(self::$middleware) && $return === false){
             self::getInstance()->handle($file);
             return '';
         }
